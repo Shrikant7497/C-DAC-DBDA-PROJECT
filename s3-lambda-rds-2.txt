@@ -1,0 +1,54 @@
+#for calling API 
+import pymysql
+import boto3
+import csv
+
+#configuration s3 
+s3=boto3.client('s3')
+
+#configuration rds
+endpoint='demo-rds.cp2c9ykq3tur.us-east-1.rds.amazonaws.com'
+username='datapirate'
+password='datapirate'
+database_name='youtube_api'
+
+#connection
+conn=pymysql.connect(host=endpoint,user=username,passwd=password,db=database_name)
+cursor=conn.cursor()
+
+def s3_data(input):
+    key = input+'.csv'
+    bucket = 'lambda-function-output'
+    s3_resource = boto3.resource('s3')
+    s3_object = s3_resource.Object(bucket, key)
+    csv_file= s3_object.get()['Body'].read().decode('utf-8')
+    result=csv.reader(csv_file.splitlines(),delimiter=',')
+    rows=list(result)
+    data=[]
+    for row in rows:
+        data.append(row)
+    return data
+
+def video_info_to_rds(output):
+    for val in output:
+        input='insert into video_info values(%s,%s,%s,%s,%s,%s,%s)'
+        cursor.execute(input,val)
+        conn.commit()
+def channel_info_to_rds(output):
+    for val in output:
+        input='insert into channel_info values(%s,%s,%s,%s)'
+        cursor.execute(input,val)
+        conn.commit()
+    
+def lambda_handler(event, context):
+    video_info_data=s3_data('video_info')
+    channel_info_data=s3_data('channel_info')
+    
+    video_info_to_rds(video_info_data)
+    channel_info_to_rds(channel_info_data)
+    
+    cursor.execute('delete from video_info limit 1')
+    conn.commit()
+    cursor.execute('delete from channel_info limit 1')
+    conn.commit()
+    
