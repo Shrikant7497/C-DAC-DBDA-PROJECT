@@ -1,0 +1,18 @@
+database- channel
+user- DataPirate
+password-datapirate24
+
+After Creating instance on EC2
+in putty
+1--login as: ec2-user
+2-- sudo su
+3-- yum install mysql
+4--Is this ok [y/d/N]: y
+5--
+mysql -h mysql–instance1.123456789012.us-east-1.rds.amazonaws.com -P 3306 -u mymasteruser -p
+
+mysql -h demo-rds.cp2c9ykq3tur.us-east-1.rds.amazonaws.com -P 3306 -u datapirate -p
+6--
+datapirate24
+7--quit (to exit mysql command promt)
+

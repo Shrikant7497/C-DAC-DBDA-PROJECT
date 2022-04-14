@@ -1,0 +1,14 @@
+create one folder in c drive then in that folder 
+1--python -m pip install virtualenv
+2--python -m virtualenv modules
+(module---folder name)
+3--cd modules
+4--cd scripts
+5--activate.bat
+6--pip install requests
+7--create one folder
+add python code file(.py) inside site-packages 
+and zip it and rename it to to aws lambda function name
+
+Another method
+pip install requests -t .
